@@ -2,15 +2,18 @@ from fastapi import FastAPI
 import docker
 import json
 
+#? After the model i will creates pydantic model
+# from pydantic import BaseModel
+
 app = FastAPI()
 
-@app.get("/")
-async def list_containers():
-    client = docker.DockerClient(base_url='tcp://localhost:2375')
-    containers = client.images.list()
-    print(containers)
-    # images = client.images.list()
-    return [{ "attrs": c.attrs} for c in containers]
+
+# send directly docker file to AI model
+
+@app.get("/model")
+async def model(dockerFile : str):
+    return {"model": "Currently working on it", "dockerFile": dockerFile}
+
     
 @app.get("/containers")
 async def list_containers():
@@ -37,14 +40,33 @@ async def list_containers(id : str):
 
     history_json = json.dumps(image.history())
 
-    return  history_json
-    
+    #! Cleaninig is not been completed 
+
+    model(history_json)
+
+@app.post("/create_container")
+async def create_container():
+    return [{"message": "Container will be re-create after the model is created"}]
 
 
 
-    # return [{ "image_attrs": image.attrs} ]
 
 
+
+# class InputData(BaseModel):
+#     feature1: float
+#     feature2: float
+#     feature3: float
+
+#? Success
+# @app.post("/machinelearning")
+# async def machine_learning(data: InputData):
+#     input_data = linear_regression.np.array([[data.feature1, data.feature2, data.feature3]])
+
+#     prediction = linear_regression.model.predict(input_data)
+#     result = prediction[0]
+
+#     return {"prediction": result}
 
 
 
@@ -64,14 +86,3 @@ async def list_containers(id : str):
     
 
 #     return [{ "attributes": image.attrs} ]
-
-@app.post("/")
-async def create_container():
-    client = docker.from_env()
-    containers = client.containers.list()
-    print(containers)    
-    return [{"Id": c.id, "Name": c.name} for c in containers]
-    # return {"message": "Container created"}
-
-
-
