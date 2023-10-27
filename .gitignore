@@ -25,4 +25,5 @@ yarn-error.log*
 
 # Ignoring the virtual server environment
 server/.venv
+server/venv
 __pycache__/
