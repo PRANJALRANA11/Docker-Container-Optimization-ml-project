@@ -82,7 +82,4 @@ async def create_container():
 #     # except docker.errors.NotFound:
 #     #     images = client.images.list()
 #     #     return [ image.attrs for image in images]
-
-    
-
 #     return [{ "attributes": image.attrs} ]
