@@ -1,7 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 import docker
 from fastapi.middleware.cors import CORSMiddleware
 import json
+import asyncio
 
 #? After the model i will creates pydantic model
 # from pydantic import BaseModel
@@ -25,6 +26,9 @@ app.add_middleware(
 
 
 # send directly docker file to AI model
+@app.get("/")
+async def root():
+    return {"message": "Docker Container ID work"}
 
 @app.get("/model")
 async def model(dockerFile : str):
@@ -63,6 +67,35 @@ async def list_containers(id : str):
 @app.post("/create_container")
 async def create_container():
     return [{"message": "Container will be re-create after the model is created"}]
+
+@app.websocket("/stats")
+async def status(websocket: WebSocket):
+    await websocket.accept()
+    client = docker.DockerClient(base_url='tcp://localhost:2375')
+
+    try:
+        while True:
+            containers = client.containers.list()
+            stats_data = []
+
+            for container in containers:
+                stats = container.stats(stream=False)
+                stats_data.append({"container_id": container.id, "stats": stats})
+            await websocket.send_json(stats_data)
+            await asyncio.sleep(2)  
+    except WebSocketDisconnect as e:
+        print(f"Client disconnected: {e}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+
+        
+
+
+
+
+
+    
 
 
 
