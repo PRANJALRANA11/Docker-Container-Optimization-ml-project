@@ -15,6 +15,8 @@ This guide will walk you through setting up and running a FastAPI application wi
 ```bash
 git clone https://github.com/DeepeshKalura/Docker-Container-Optimization-ml-project
 cd Docker-Container-Optimization-ml-project
+git clone link will add later
+cd 
 ```
 
 ### 2. Create a Virtual Environment
@@ -52,7 +54,6 @@ Assuming your FastAPI application is in a file named `main.py`, you can start th
 ```bash
 uvicorn main:app --reload
 ```
-
 The `--reload` option is used for development, which will automatically reload the server when you make code changes. For production, you should remove `--reload`.
 
 ### 2. Access the Application
