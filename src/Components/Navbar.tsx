@@ -8,7 +8,7 @@ const Navbar = () => {
             Container Optimization
         </h1>
         <p className='text-slate-400  text-lg font-poppins px-10 '>
-            Shows usage manage and optimize containers
+            Shows usage manage and optimized containers
         </p>
       </div>
     </div>

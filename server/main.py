@@ -1,11 +1,27 @@
 from fastapi import FastAPI
 import docker
+from fastapi.middleware.cors import CORSMiddleware
 import json
 
 #? After the model i will creates pydantic model
 # from pydantic import BaseModel
 
 app = FastAPI()
+
+
+#? CORS
+origins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # send directly docker file to AI model
