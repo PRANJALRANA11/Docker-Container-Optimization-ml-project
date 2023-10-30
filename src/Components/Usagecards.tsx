@@ -3,7 +3,7 @@ import React from 'react'
 const Usagecards = () => {
   return (
     <div className='flex mt-10'>
-      <div className='card1  w-96 h-40 bg-slate-800 ml-48 mr-10 border-black rounded-lg p-5'>
+      <div className='card1  w-96 h-40 bg-slate-800 ml-40 mr-10 border-black rounded-lg p-5'>
         <p className='text-slate-400'>
           CPU Resource Usage
         </p>
