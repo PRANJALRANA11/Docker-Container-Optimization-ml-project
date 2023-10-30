@@ -1,7 +1,9 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 import docker
+import subprocess
 from fastapi.middleware.cors import CORSMiddleware
 import json
+import os
 import asyncio
 
 #? After the model i will creates pydantic model
@@ -24,7 +26,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 # send directly docker file to AI model
 @app.get("/")
 async def root():
@@ -39,30 +40,35 @@ async def model(dockerFile : str):
 async def list_containers():
     client = docker.DockerClient(base_url='tcp://localhost:2375')
     containers = client.containers.list(all=True)
-    # print(containers)
-    # images = client.images.list()
+    images = client.images.list(all=True)
     return [{ "arrtributes": c.attrs  } for c in containers]
 
 @app.get("/containers/{id}")
 async def list_containers(id : str):
     client = docker.DockerClient(base_url='tcp://localhost:2375')
     try:
-
         id_container = client.containers.get(container_id=id)
+        image_id = id_container.attrs['Config']['Image']
+        image = client.images.get(image_id)
+        command=["wsl", "dive", "--json", "file"]
+        command.insert(2, image_id)
+        process=  subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+        
     except docker.errors.NotFound:
         return {"message": "Container not found"}
     
     # extraction of docker file
-    image_id = id_container.attrs['Config']['Image']
+   
+    # history_json = json.dumps(image.history())
 
-    image = client.images.get(image_id)
-
-
-    history_json = json.dumps(image.history())
+    
+    # print(process.stdout)
+    
+    # return history_json
 
     #! Cleaninig is not been completed 
 
-    model(history_json)
+    # model(history_json)
 
 @app.post("/create_container")
 async def create_container():

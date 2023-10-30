@@ -4,7 +4,7 @@ const Navbar = () => {
   return (
     <div>
       <div >
-        <h1 className='text-white font-bold text-2xl font-sans-serif px-10 py-7'>
+        <h1 className='text-white font-bold text-2xl font-sans-serif px-10 py-7 '>
             Container Optimization
         </h1>
         <p className='text-slate-400  text-lg font-poppins px-10 '>
