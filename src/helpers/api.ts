@@ -21,4 +21,8 @@ export function Connection_Api() {
     };
   });
 }
+export async function Inspect_Image_Api(id:string) {
+  const response= await axios.get(`'http://localhost:8000/inspect_image/${id}'`);
+  return response;
+}
 
