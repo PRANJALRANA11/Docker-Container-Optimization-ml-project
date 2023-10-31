@@ -72,6 +72,11 @@ async def status(websocket: WebSocket):
     except Exception as e:
         print(f"An error occurred: {e}")
 
+#! will be removed just for the learning purpose
+@app.get("/slim")
+async def slim():
+    client = docker.DockerClient(base_url='tcp://localhost:2375')
+
 
         
 
