@@ -3,6 +3,7 @@ import docker
 import subprocess
 from fastapi.middleware.cors import CORSMiddleware
 import json
+import os
 import asyncio
 
 #? After the model i will creates pydantic model
@@ -35,12 +36,14 @@ async def model(dockerFile : str):
     return {"model": "Currently working on it", "dockerFile": dockerFile}
 
     
+
 # @app.get("/containers")
 # async def list_containers():
 #     client = docker.DockerClient(base_url='tcp://localhost:2375')
 #     containers = client.containers.list(all=True)
 #     images = client.images.list(all=True)
 #     return [{ "arrtributes": c.attrs  } for c in containers]
+
 
 @app.get("/containers/{id}")
 async def list_containers(id : str):
@@ -73,16 +76,6 @@ async def list_containers(id : str):
     #! Cleaninig is not been completed 
 
     # model(history_json)
-
-# @app.get("/optimize/{id}")
-# async def optimize_container():
-#     try:
-#         client = docker.DockerClient(base_url='tcp://localhost:2375')
-#         id_container = client.containers.get(container_id=id)
-#         image_id = id_container.attrs['Config']['Image']
-#         image = client.images.get(image_id)
-         
-#         return 
 
 @app.post("/create_container")
 async def create_container():
