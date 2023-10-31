@@ -1,6 +1,9 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 import docker
+import subprocess
+from fastapi.middleware.cors import CORSMiddleware
 import json
+import os
 import asyncio
 
 #? After the model i will creates pydantic model
@@ -8,6 +11,20 @@ import asyncio
 
 app = FastAPI()
 
+
+#? CORS
+origins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # send directly docker file to AI model
 @app.get("/")
@@ -19,34 +36,46 @@ async def model(dockerFile : str):
     return {"model": "Currently working on it", "dockerFile": dockerFile}
 
     
-@app.get("/containers")
-async def list_containers():
-    client = docker.DockerClient(base_url='tcp://localhost:2375')
-    containers = client.containers.list(all=True)
-    # print(containers)
-    # images = client.images.list()
-    return [{ "arrtributes": c.attrs  } for c in containers]
+
+# @app.get("/containers")
+# async def list_containers():
+#     client = docker.DockerClient(base_url='tcp://localhost:2375')
+#     containers = client.containers.list(all=True)
+#     images = client.images.list(all=True)
+#     return [{ "arrtributes": c.attrs  } for c in containers]
+
 
 @app.get("/containers/{id}")
 async def list_containers(id : str):
     client = docker.DockerClient(base_url='tcp://localhost:2375')
     try:
-
         id_container = client.containers.get(container_id=id)
+        image_id = id_container.attrs['Config']['Image']
+        image = client.images.get(image_id)
+        command=["wsl", "dive", "--json", "file.json"]
+        command.insert(2, image_id)
+        process= subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+        process.wait()
+        filehandler=open("file.json","r")
+        readFile = filehandler.read()  
+        filehandler=open("file.json","w")
+        filehandler.truncate(0)
+        return json.loads(readFile)
     except docker.errors.NotFound:
         return {"message": "Container not found"}
     
     # extraction of docker file
-    image_id = id_container.attrs['Config']['Image']
+   
+    # history_json = json.dumps(image.history())
 
-    image = client.images.get(image_id)
-
-
-    history_json = json.dumps(image.history())
+    
+    # print(process.stdout)
+    
+    # return history_json
 
     #! Cleaninig is not been completed 
 
-    model(history_json)
+    # model(history_json)
 
 @app.post("/create_container")
 async def create_container():
@@ -120,7 +149,4 @@ async def slim():
 #     # except docker.errors.NotFound:
 #     #     images = client.images.list()
 #     #     return [ image.attrs for image in images]
-
-    
-
 #     return [{ "attributes": image.attrs} ]

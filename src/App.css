@@ -1,5 +1,9 @@
+
+@import url('https://fonts.googleapis.com/css2?family=ADLaM+Display&family=Poppins&display=swap');
+
 .App {
-  text-align: center;
+  background-color: #0f1d32;
+  height: 110vh;
 }
 
 .App-logo {
