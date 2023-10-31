@@ -102,9 +102,32 @@ async def status(websocket: WebSocket):
         print(f"An error occurred: {e}")
 
 #! will be removed just for the learning purpose
-@app.get("/slim")
-async def slim():
+
+
+@app.get("/slim/{id}")
+async def slim(id: str):
     client = docker.DockerClient(base_url='tcp://localhost:2375')
+
+    image = client.images.get(id)
+
+    command = f"docker-slim build {image.tags[0]}"
+    container = client.containers.run("dslim/slim", command=command, volumes={'/var/run/docker.sock': {'bind': '/var/run/docker.sock', 'mode': 'rw'}}, detach=True)
+
+
+
+    response = container.wait()
+    container.remove()
+
+    
+    if response['StatusCode'] == 0:
+        slim_image_id = image.tags[0].replace(":",".slim:")
+        slim_image = client.images.get(slim_image_id)
+        #! Will going to call a new end-point ok
+        return {"message": f"Slimmed image created with id: {slim_image.id}"}
+    else:
+        return {"message": "Failed to create slimmed image."}
+
+
 
 
         
