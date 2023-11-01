@@ -1,8 +1,7 @@
-import React,{useEffect,useState} from 'react'
-import { Connection_Api, Inspect_Image_Api } from '../helpers/api' 
+import React,{SetStateAction} from 'react'
+import {useNavigate } from 'react-router-dom';
 
-
-interface ContainerStats {
+export interface ContainerStats {
   containerID: string;
   containerName: string;
   cpuUsagePercentage: number;
@@ -11,50 +10,24 @@ interface ContainerStats {
   network: number;
   pids: number;
 }
-const Containers = () => {
-  const [containerData, setContainerData] = useState<ContainerStats[] | null>(null);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response:any = await Connection_Api();
-        const containerStatsArray: ContainerStats[] = response.map((container:any) => {
-          const previousTotalUsage:number = container.stats.precpu_stats.cpu_usage.total_usage;
-          const currentTotalUsage:number = container.stats.cpu_stats.cpu_usage.total_usage;
-          const numberOfCPUs:number = container.stats.precpu_stats.online_cpus;
-          const cpuUsagePercentage:number = ((currentTotalUsage - previousTotalUsage) / numberOfCPUs) * 100;
-          const memoryUsageInBytes:number = container.stats.memory_stats.usage;
-          const memoryLimitInBytes:number = container.stats.memory_stats.limit;
-          const memoryUsageInMebibytes:number = memoryUsageInBytes / 1024 / 1024;
-          const rxBytes:number = container.stats.networks.eth0.rx_bytes;
-          const txBytes:number = container.stats.networks.eth0.tx_bytes;
-          const network:number = rxBytes / txBytes;
-          const containerName:string = container.stats.name;
-          const containerID:string = container.stats.id;
-          const pids:number = container.stats.pids_stats.current;
+interface ContainersProps {
+  containers: ContainerStats[] | null;
+  ID:(set: SetStateAction<string>) => void;
+}
 
-          return {
-            containerID,
-            containerName,
-            cpuUsagePercentage,
-            memoryUsageInMebibytes,
-            memoryLimitInBytes,
-            network,
-            pids,
-          };
-        });
+const Containers: React.FC<ContainersProps> = ({containers,ID}) => {
+ 
+  let navigate = useNavigate();
 
-        setContainerData(containerStatsArray);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
+  const handleInspectImage = async(containerID:string) => {
+    try{
+      ID(containerID);
+      navigate('/inspect_image');
+      console.log(containerID)
+    }catch(error){
+      console.log(error);
     }
-
-    fetchData();
-  }, []);
-
-  const handleInspectImage = (containerID:string) => {
-    const response = Inspect_Image_Api(containerID);
   }
   return (
     <div>
@@ -89,8 +62,8 @@ const Containers = () => {
     </div>
   </div>
   <div className='w-4/5 h-0.5 ml-44 bg-slate-400'></div>
-  {containerData &&
-    containerData.map((container, index) => (
+  {containers &&
+    containers.map((container, index) => (
       <div>
       <div key={index} className='flex ml-44 mt-8'>
         <div className='w-40'>
@@ -109,7 +82,7 @@ const Containers = () => {
           <p className='text-white text-lg'>{container.network} B</p>
         </div>
         <div className='w-40'>
-          <button  className='text-black text-md ml-2 bg-white rounded-md w-24 h-8 hover:shadow-[5px_5px_0px_0px_rgba(109,40,217)] transition-all '>
+          <button onClick={()=>handleInspectImage(container.containerID)} className='text-black text-md ml-2 bg-white rounded-md w-24 h-8 hover:shadow-[5px_5px_0px_0px_rgba(109,40,217)] transition-all '>
             Inspect
           </button>
         </div>
