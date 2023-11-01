@@ -1,15 +1,8 @@
+
 import React,{SetStateAction} from 'react'
 import {useNavigate } from 'react-router-dom';
 
-export interface ContainerStats {
-  containerID: string;
-  containerName: string;
-  cpuUsagePercentage: number;
-  memoryUsageInMebibytes: number;
-  memoryLimitInBytes: number;
-  network: number;
-  pids: number;
-}
+
 
 interface ContainersProps {
   containers: ContainerStats[] | null;
@@ -28,6 +21,50 @@ const Containers: React.FC<ContainersProps> = ({containers,ID}) => {
     }catch(error){
       console.log(error);
     }
+const Containers = () => {
+  const [containerData, setContainerData] = useState<ContainerStats[] | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response:any = await Connection_Api();
+        const containerStatsArray: ContainerStats[] = response.map((container:any) => {
+          const previousTotalUsage:number = container.stats.precpu_stats.cpu_usage.total_usage;
+          const currentTotalUsage:number = container.stats.cpu_stats.cpu_usage.total_usage;
+          const numberOfCPUs:number = container.stats.precpu_stats.online_cpus;
+          const cpuUsagePercentage:number = ((currentTotalUsage - previousTotalUsage) / numberOfCPUs) * 100;
+          const memoryUsageInBytes:number = container.stats.memory_stats.usage;
+          const memoryLimitInBytes:number = container.stats.memory_stats.limit;
+          const memoryUsageInMebibytes:number = memoryUsageInBytes / 1024 / 1024;
+          const rxBytes:number = container.stats.networks.eth0.rx_bytes;
+          const txBytes:number = container.stats.networks.eth0.tx_bytes;
+          const network:number = rxBytes / txBytes;
+          const containerName:string = container.stats.name;
+          const containerID:string = container.stats.id;
+          const pids:number = container.stats.pids_stats.current;
+
+          return {
+            containerID,
+            containerName,
+            cpuUsagePercentage,
+            memoryUsageInMebibytes,
+            memoryLimitInBytes,
+            network,
+            pids,
+          };
+        });
+
+        setContainerData(containerStatsArray);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  const handleInspectImage = (containerID:string) => {
+    const response = Inspect_Image_Api(containerID);
   }
   return (
     <div>
@@ -64,6 +101,7 @@ const Containers: React.FC<ContainersProps> = ({containers,ID}) => {
   <div className='w-4/5 h-0.5 ml-44 bg-slate-400'></div>
   {containers &&
     containers.map((container, index) => (
+
       <div>
       <div key={index} className='flex ml-44 mt-8'>
         <div className='w-40'>

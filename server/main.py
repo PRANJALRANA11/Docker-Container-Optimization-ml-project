@@ -35,7 +35,7 @@ async def root():
 async def model(dockerFile : str):
     return {"model": "Currently working on it", "dockerFile": dockerFile}
 
-    
+
 
 # @app.get("/containers")
 # async def list_containers():
