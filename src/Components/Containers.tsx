@@ -1,16 +1,26 @@
-import React,{useEffect,useState} from 'react'
-import { Connection_Api, Inspect_Image_Api } from '../helpers/api' 
+
+import React,{SetStateAction} from 'react'
+import {useNavigate } from 'react-router-dom';
 
 
-interface ContainerStats {
-  containerID: string;
-  containerName: string;
-  cpuUsagePercentage: number;
-  memoryUsageInMebibytes: number;
-  memoryLimitInBytes: number;
-  network: number;
-  pids: number;
+
+interface ContainersProps {
+  containers: ContainerStats[] | null;
+  ID:(set: SetStateAction<string>) => void;
 }
+
+const Containers: React.FC<ContainersProps> = ({containers,ID}) => {
+ 
+  let navigate = useNavigate();
+
+  const handleInspectImage = async(containerID:string) => {
+    try{
+      ID(containerID);
+      navigate('/inspect_image');
+      console.log(containerID)
+    }catch(error){
+      console.log(error);
+    }
 const Containers = () => {
   const [containerData, setContainerData] = useState<ContainerStats[] | null>(null);
 
@@ -89,8 +99,9 @@ const Containers = () => {
     </div>
   </div>
   <div className='w-4/5 h-0.5 ml-44 bg-slate-400'></div>
-  {containerData &&
-    containerData.map((container, index) => (
+  {containers &&
+    containers.map((container, index) => (
+
       <div>
       <div key={index} className='flex ml-44 mt-8'>
         <div className='w-40'>
@@ -109,7 +120,7 @@ const Containers = () => {
           <p className='text-white text-lg'>{container.network} B</p>
         </div>
         <div className='w-40'>
-          <button  className='text-black text-md ml-2 bg-white rounded-md w-24 h-8 hover:shadow-[5px_5px_0px_0px_rgba(109,40,217)] transition-all '>
+          <button onClick={()=>handleInspectImage(container.containerID)} className='text-black text-md ml-2 bg-white rounded-md w-24 h-8 hover:shadow-[5px_5px_0px_0px_rgba(109,40,217)] transition-all '>
             Inspect
           </button>
         </div>

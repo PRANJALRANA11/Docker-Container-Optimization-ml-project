@@ -1,16 +1,29 @@
-import React from 'react'
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
-export default function Images() {
-    const Effeciency_score:number=75;
-    const offset:number=Effeciency_score === 100 ? 0 : ((100 - Effeciency_score) / 100) * 2 * 3.14 ;
 
+import React, { useEffect } from 'react'
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import {  Inspect_Image_Api } from '../helpers/api' 
+import 'react-circular-progressbar/dist/styles.css';
+
+
+
+export default function Images({ID}:any){
+  useEffect(() => {
+    const handleInspectImage = async(ID:string) => {
+      try{
+        console.log(ID)
+        const response =  await Inspect_Image_Api(ID);
+        if(response.status === 200){
+        console.log(response);
+        }
+      }catch(error){
+        console.log(error);
+      }
+    }
+    handleInspectImage(ID);
+    
+    },[ID]);
   return (
     <div className="ml-5 space-y-4">
-        
-        
-
-
       <h3 className="text-3xl ml-80 mt-10 text-white">Analyzing:</h3>
       <div className="flex ml-80 space-x-4">
         <div>

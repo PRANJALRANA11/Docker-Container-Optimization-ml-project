@@ -35,7 +35,7 @@ async def root():
 async def model(dockerFile : str):
     return {"model": "Currently working on it", "dockerFile": dockerFile}
 
-    
+
 
 # @app.get("/containers")
 # async def list_containers():
@@ -45,7 +45,7 @@ async def model(dockerFile : str):
 #     return [{ "arrtributes": c.attrs  } for c in containers]
 
 
-@app.get("/containers/{id}")
+@app.get("/inspect_image/{id}")
 async def list_containers(id : str):
     client = docker.DockerClient(base_url='tcp://localhost:2375')
     try:
