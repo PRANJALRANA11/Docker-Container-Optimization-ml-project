@@ -20,6 +20,7 @@ interface ContainerStats {
   pids: number;
 }
 
+
 function App() {
 
   const [containerData, setContainerData] = useState<ContainerStats[] | null>(null);
@@ -71,6 +72,7 @@ function App() {
         <Route path="/" element={<Containers containers={containerData} ID={setID} />}/>
         <Route path="/inspect_image" element={<Images ID={ID}/>}/>
        </Routes>
+
     </div>
   );
 }

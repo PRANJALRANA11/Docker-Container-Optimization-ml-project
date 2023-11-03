@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react'
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import {  Inspect_Image_Api } from '../helpers/api' 
@@ -6,17 +7,21 @@ import 'react-circular-progressbar/dist/styles.css';
 
 
 export default function Images({ID}:any){
+
   const [details_image,setdetails_image] = React.useState<any>({});
   const [details_layers,setdetails_layers] = React.useState<any[]>([]);
+
   useEffect(() => {
     const handleInspectImage = async(ID:string) => {
       try{
         console.log(ID)
         const response =  await Inspect_Image_Api(ID);
         if(response.status === 200){
+
         console.log(response.data);
         setdetails_image(response.data.image);
         setdetails_layers(response.data.layer);
+
         }
       }catch(error){
         console.log(error);
@@ -60,6 +65,7 @@ export default function Images({ID}:any){
         <div >
         <div style={{ width: 200, height: 200, marginLeft:200 }}>
         <CircularProgressbar  strokeWidth={4} value={Math.floor(details_image.efficiencyScore*100)} text={`${Math.floor(details_image.efficiencyScore*100)}%`} styles={buildStyles({
+
                                     strokeLinecap: 'round',
                                     textSize: '16px',
                                     pathTransitionDuration: 0.5,
@@ -72,12 +78,15 @@ export default function Images({ID}:any){
         </div>
         </div>
       </div>
+
       <div className="ml-20  space-y-2">
         <h3 className="text-3xl text-white" style={{fontFamily:"poppins"}}>Layers</h3>
+
         <div>
       <div className="mt-10 w-4/5">
       <div className="bg-white  shadow-md  rounded-lg">
         <table className="w-full table-fixed">
+
           <thead style={{backgroundColor:"rgb(29 50 80)"}}>
             <tr>
               <th className="px-4 py-2 text-left text-white font-semibold" style={{fontFamily:"poppins"}}>Index</th>
@@ -98,6 +107,7 @@ export default function Images({ID}:any){
     </tr>
   ))}
 </tbody>
+
 
         </table>
       </div>

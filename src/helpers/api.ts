@@ -1,9 +1,6 @@
 // Purpose: API helper functions.
 import axios from 'axios'
 
-
-
-
 export function Connection_Api() {
   return new Promise((resolve, reject) => {
     const ws = new WebSocket("ws://localhost:8000/stats");
