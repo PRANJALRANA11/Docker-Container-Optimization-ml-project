@@ -111,21 +111,22 @@ async def slim(id: str):
     image = client.images.get(id)
 
     command = f"docker-slim build {image.tags[0]}"
-    container = client.containers.run("dslim/slim", command=command, volumes={'/var/run/docker.sock': {'bind': '/var/run/docker.sock', 'mode': 'rw'}}, detach=True)
+    container = client.containers.run("dslim/slim", command=command, volumes={'/var/run/docker.sock': {'bind': '/var/run/docker.sock', 'mode': 'rw'}}, detach=True,)
 
 
-
-    response = container.wait()
-    container.remove()
-
+   
     
-    if response['StatusCode'] == 0:
+
+    try:
         slim_image_id = image.tags[0].replace(":",".slim:")
         slim_image = client.images.get(slim_image_id)
-        #! Will going to call a new end-point ok
-        return {"message": f"Slimmed image created with id: {slim_image.id}"}
+    except docker.errors.ImageNotFound:
+            print("Image not found")
     else:
         return {"message": "Failed to create slimmed image."}
+
+        #! Will going to call a new end-point ok
+    return {"message": f"Slimmed image created with id: {slim_image.id}"}
 
 
 
