@@ -56,22 +56,30 @@ async def list_containers(id : str):
         return {"message": "Container not found"}
     
    
-@app.get("/optimize_image/{image_name}")
-async def create_container(image_name: str):
+
+@app.get("/optimize_image/{container_id}")
+async def create_container(container_id : str):
     try:
         client = docker.DockerClient(base_url='tcp://localhost:2375')
-        process=subprocess.run(["powershell","docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock dslim/slim build --http-probe {image_name}"], shell=True, stdout=subprocess.PIPE)
+        id_container = client.containers.get(container_id=container_id)
+        image_id = id_container.attrs['Config']['Image']
+        image = client.images.get(image_id)
+        result = image.tags[0].split(':')[0]
+        process=subprocess.run(["powershell",f"docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock dslim/slim build --http-probe {result}"], shell=True, stdout=subprocess.PIPE)
         print(process.stdout)
-        print(image_name + '.slim')
+        print(result + '.slim')
         command=["wsl", "dive", "--json", "file.json"]
-        command.insert(2,image_name + '.slim')
+        command.insert(2,result + '.slim')
+
+
         process= subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
         filehandler=open("file.json","r")
         readFile = filehandler.read()  
         filehandler=open("file.json","w")
         filehandler.truncate(0)
         return json.loads(readFile)
-    except:
+    except docker.errors.NotFound:
+
         return {"message": "Error"}
 
 
