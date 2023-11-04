@@ -1,27 +1,34 @@
+
 import React, { useEffect } from 'react'
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import {  Inspect_Image_Api } from '../helpers/api' 
 import 'react-circular-progressbar/dist/styles.css';
+
 import { useNavigate } from 'react-router-dom';
 
 
 
+
 export default function Images({ID}:any){
+
   const navigate = useNavigate();
   const [details_image,setdetails_image] = React.useState<any>({});
   const [details_layers,setdetails_layers] = React.useState<any[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   
+
   useEffect(() => {
     const handleInspectImage = async(ID:string) => {
       try{
         console.log(ID)
         const response =  await Inspect_Image_Api(ID);
         if(response.status === 200){
+
         console.log(response.data);
         setdetails_image(response.data.image);
         setdetails_layers(response.data.layer);
         setIsLoading(false);
+
         }
       }catch(error){
         console.log(error);
@@ -37,6 +44,7 @@ export default function Images({ID}:any){
         <div>
         <div className=" rounded-md p-4">
           <div className="text-sm text-gray-400" style={{fontFamily:"poppins"}}>Total Size</div>
+
           {isLoading ? (
         // Display loading GIF while data is being fetched
         <div className='mt-8'>
@@ -77,6 +85,7 @@ export default function Images({ID}:any){
         <div className='w-40 mt-5'>
           <button onClick={()=> navigate("/optimized_image")}  className='text-black text-md bg-white rounded-md w-32 h-8 hover:shadow-[5px_5px_0px_0px_rgba(109,40,217)] transition-all' style={{fontFamily:"poppins"}}>
             Optimize 
+
           </button>
         </div>
         </div>
@@ -84,6 +93,7 @@ export default function Images({ID}:any){
         </div>
         <div >
         <div style={{ width: 200, height: 200, marginLeft:200 }}>
+
         {isLoading ? (
         // Display loading GIF while data is being fetched
         <div className='flex justify-center mt-40'>
@@ -91,6 +101,7 @@ export default function Images({ID}:any){
         </div>
       ) : (
         <CircularProgressbar  strokeWidth={4} value={Math.floor(details_image.efficiencyScore*100)} text={`${Math.floor(details_image.efficiencyScore*100)}%`} styles={buildStyles({
+
                                     strokeLinecap: 'round',
                                     textSize: '16px',
                                     pathTransitionDuration: 0.5,
@@ -99,6 +110,7 @@ export default function Images({ID}:any){
                                     pathColor:"#f06155",
             
                                 })}
+
                             />
                             )}
         </div>
@@ -116,6 +128,7 @@ export default function Images({ID}:any){
         </div>
       ) : (
         <table className="w-full table-fixed">
+
           <thead style={{backgroundColor:"rgb(29 50 80)"}}>
             <tr>
               <th className="px-4 py-2 text-left text-white font-semibold" style={{fontFamily:"poppins"}}>Index</th>
@@ -137,8 +150,10 @@ export default function Images({ID}:any){
   ))}
 </tbody>
 
+
         </table>
       )}
+
       </div>
     </div>
     </div>

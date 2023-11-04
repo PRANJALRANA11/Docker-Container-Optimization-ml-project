@@ -56,6 +56,7 @@ async def list_containers(id : str):
         return {"message": "Container not found"}
     
    
+
 @app.get("/optimize_image/{container_id}")
 async def create_container(container_id : str):
     try:
@@ -69,6 +70,8 @@ async def create_container(container_id : str):
         print(result + '.slim')
         command=["wsl", "dive", "--json", "file.json"]
         command.insert(2,result + '.slim')
+
+
         process= subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
         filehandler=open("file.json","r")
         readFile = filehandler.read()  
@@ -76,6 +79,7 @@ async def create_container(container_id : str):
         filehandler.truncate(0)
         return json.loads(readFile)
     except docker.errors.NotFound:
+
         return {"message": "Error"}
 
 

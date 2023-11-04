@@ -7,7 +7,9 @@ import { useEffect, useState } from 'react';
 import { Connection_Api } from './helpers/api';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Route, Routes } from 'react-router-dom';
+
 import Optimized from './Components/Optimized';
+
 
 
 
@@ -21,6 +23,7 @@ interface ContainerStats {
   pids: number;
 }
 
+
 function App() {
 
   const [containerData, setContainerData] = useState<ContainerStats[] | null>(null);
@@ -30,7 +33,9 @@ function App() {
     async function fetchData() {
       try {
         const response:any = await Connection_Api();
+
         console.log(response);
+
         const containerStatsArray: ContainerStats[] = response.map((container:any) => {
           const previousTotalUsage:number = container.stats.precpu_stats.cpu_usage.total_usage;
           const currentTotalUsage:number = container.stats.cpu_stats.cpu_usage.total_usage;
@@ -72,8 +77,10 @@ function App() {
        <Routes>
         <Route path="/" element={<Containers containers={containerData} ID={setID} />}/>
         <Route path="/inspect_image" element={<Images ID={ID}/>}/>
+
         <Route path="/optimized_image" element={<Optimized ID={ID}/>}/>
        </Routes>
+
     </div>
   );
 }

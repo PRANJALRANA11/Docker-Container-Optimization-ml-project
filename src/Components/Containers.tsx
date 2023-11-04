@@ -1,3 +1,4 @@
+
 import React,{SetStateAction,useState,useEffect} from 'react'
 import {useNavigate } from 'react-router-dom';
 
@@ -22,13 +23,12 @@ const Containers: React.FC<ContainersProps> = ({containers,ID}) => {
   let navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
 
+
   useEffect(() => {
     if (containers) {
       setIsLoading(false);
     }
   }, [containers]);
-
-  
 
   const handleInspectImage = async(containerID:string) => {
     
