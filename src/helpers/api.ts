@@ -26,4 +26,8 @@ export async function Inspect_Image_Api(id:string) {
   const response= await axios.get(`http://localhost:8000/inspect_image/${id}`);
   return response;
 }
+export async function Inspect_optimized_Image_Api(id:string) {
+  const response= await axios.get(`http://localhost:8000/optimize_image/${id}`);
+  return response;
+}
 

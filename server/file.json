@@ -2,14 +2,14 @@
   "layer": [
     {
       "index": 0,
-      "id": "af10c63fa8e077a49490c4796c73a9c1e08575bc52bbbdf67cefb58112738683",
-      "digestId": "sha256:dd4d83ab39e37b7b32fd9c3c6ba97ab1f7421fad7d3d0e8c2c02ff0d624232bd",
-      "sizeBytes": 52387835,
+      "id": "ba692491934ea3f45f3d7a89dee3286ee9a55152d6ab2e752a2d92bbb1fd1664",
+      "digestId": "sha256:94255b1de48a7e14e12760d4971107644b74df96c0626268e140d85a59113669",
+      "sizeBytes": 104407258,
       "command": ""
     }
   ],
   "image": {
-    "sizeBytes": 52387835,
+    "sizeBytes": 104407258,
     "inefficientBytes": 0,
     "efficiencyScore": 1,
     "fileReference": []

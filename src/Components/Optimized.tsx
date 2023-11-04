@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react'
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import {  Inspect_Image_Api } from '../helpers/api' 
+import {  Inspect_optimized_Image_Api } from '../helpers/api' 
 import 'react-circular-progressbar/dist/styles.css';
 import { useNavigate } from 'react-router-dom';
 
 
 
-export default function Images({ID}:any){
+export default function Optimized({ID}:any){
   const navigate = useNavigate();
   const [details_image,setdetails_image] = React.useState<any>({});
   const [details_layers,setdetails_layers] = React.useState<any[]>([]);
@@ -16,9 +16,9 @@ export default function Images({ID}:any){
     const handleInspectImage = async(ID:string) => {
       try{
         console.log(ID)
-        const response =  await Inspect_Image_Api(ID);
+        const response =  await Inspect_optimized_Image_Api(ID);
         if(response.status === 200){
-        console.log(response.data);
+        console.log(response);
         setdetails_image(response.data.image);
         setdetails_layers(response.data.layer);
         setIsLoading(false);
@@ -32,7 +32,7 @@ export default function Images({ID}:any){
     },[ID]);
   return (
     <div className="pl-5 space-y-4" style={{backgroundColor:"#0f1d32"}}>
-      <h3 className="text-3xl ml-80 mt-10 text-white" style={{fontFamily:"poppins"}}>Analyzing:</h3>
+      <h3 className="text-3xl ml-80 mt-10 text-white" style={{fontFamily:"poppins"}}>Analyzing Optimized Image:</h3>
       <div className="flex ml-80 space-x-4">
         <div>
         <div className=" rounded-md p-4">
@@ -72,11 +72,6 @@ export default function Images({ID}:any){
         <div className='w-40 mt-5'>
           <button onClick={()=> navigate("/")} className='text-black text-md bg-white rounded-md w-32 h-8 hover:shadow-[5px_5px_0px_0px_rgba(109,40,217)] transition-all' style={{fontFamily:"poppins"}}>
             Containers
-          </button>
-        </div>
-        <div className='w-40 mt-5'>
-          <button onClick={()=> navigate("/optimized_image")}  className='text-black text-md bg-white rounded-md w-32 h-8 hover:shadow-[5px_5px_0px_0px_rgba(109,40,217)] transition-all' style={{fontFamily:"poppins"}}>
-            Optimize 
           </button>
         </div>
         </div>
