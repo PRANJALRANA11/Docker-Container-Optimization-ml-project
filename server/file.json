@@ -1,0 +1,17 @@
+{
+  "layer": [
+    {
+      "index": 0,
+      "id": "af10c63fa8e077a49490c4796c73a9c1e08575bc52bbbdf67cefb58112738683",
+      "digestId": "sha256:dd4d83ab39e37b7b32fd9c3c6ba97ab1f7421fad7d3d0e8c2c02ff0d624232bd",
+      "sizeBytes": 52387835,
+      "command": ""
+    }
+  ],
+  "image": {
+    "sizeBytes": 52387835,
+    "inefficientBytes": 0,
+    "efficiencyScore": 1,
+    "fileReference": []
+  }
+}

@@ -35,17 +35,8 @@ async def root():
 async def model(dockerFile : str):
     return {"model": "Currently working on it", "dockerFile": dockerFile}
 
-    
 
-# @app.get("/containers")
-# async def list_containers():
-#     client = docker.DockerClient(base_url='tcp://localhost:2375')
-#     containers = client.containers.list(all=True)
-#     images = client.images.list(all=True)
-#     return [{ "arrtributes": c.attrs  } for c in containers]
-
-
-@app.get("/containers/{id}")
+@app.get("/inspect_image/{id}")
 async def list_containers(id : str):
     client = docker.DockerClient(base_url='tcp://localhost:2375')
     try:
@@ -53,7 +44,7 @@ async def list_containers(id : str):
         image_id = id_container.attrs['Config']['Image']
         image = client.images.get(image_id)
         command=["wsl", "dive", "--json", "file.json"]
-        command.insert(2, image_id)
+        command.insert(2,image_id)
         process= subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
         process.wait()
         filehandler=open("file.json","r")
@@ -64,28 +55,30 @@ async def list_containers(id : str):
     except docker.errors.NotFound:
         return {"message": "Container not found"}
     
-    # extraction of docker file
    
-    # history_json = json.dumps(image.history())
+@app.get("/optimize_image/{image_name}")
+async def create_container(image_name: str):
+    try:
+        client = docker.DockerClient(base_url='tcp://localhost:2375')
+        process=subprocess.run(["powershell","docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock dslim/slim build --http-probe {image_name}"], shell=True, stdout=subprocess.PIPE)
+        print(process.stdout)
+        print(image_name + '.slim')
+        command=["wsl", "dive", "--json", "file.json"]
+        command.insert(2,image_name + '.slim')
+        process= subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+        filehandler=open("file.json","r")
+        readFile = filehandler.read()  
+        filehandler=open("file.json","w")
+        filehandler.truncate(0)
+        return json.loads(readFile)
+    except:
+        return {"message": "Error"}
 
-    
-    # print(process.stdout)
-    
-    # return history_json
-
-    #! Cleaninig is not been completed 
-
-    # model(history_json)
-
-@app.post("/create_container")
-async def create_container():
-    return [{"message": "Container will be re-create after the model is created"}]
 
 @app.websocket("/stats")
 async def status(websocket: WebSocket):
     await websocket.accept()
     client = docker.DockerClient(base_url='tcp://localhost:2375')
-
     try:
         while True:
             containers = client.containers.list()
