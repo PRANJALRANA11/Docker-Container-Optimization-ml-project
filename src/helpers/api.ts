@@ -4,7 +4,7 @@ import axios from 'axios'
 
 export function Connection_Api() {
   return new Promise((resolve, reject) => {
-    const ws = new WebSocket("ws://localhost:8000/stats");
+    const ws = new WebSocket("ws://127.0.0.1:8000/stats");
 
     ws.onopen = (event) => {
       ws.send("Connect");
@@ -21,12 +21,12 @@ export function Connection_Api() {
   });
 }
 export async function Inspect_Image_Api(id:string) {
-  const response= await axios.get(`http://localhost:8000/inspect_image/${id}`);
+  const response= await axios.get(`http://127.0.0.1:8000/inspect_image/${id}`);
   return response;
 }
 
 export async function Inspect_optimized_Image_Api(id:string) {
-  const response= await axios.get(`http://localhost:8000/optimize_image/${id}`);
+  const response= await axios.get(`http://127.0.0.1:8000/optimize_image/${id}`);
   return response;
 }
 
