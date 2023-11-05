@@ -45,8 +45,10 @@ async def list_containers(id : str):
         id_container = client.containers.get(container_id=id)
         image_id = id_container.attrs['Config']['Image']
         image = client.images.get(image_id)
-        command=["wsl", "dive", "--json", "file.json"]
-        command.insert(2,image_id)
+        command=[f"docker run --rm -it \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -e DOCKER_API_VERSION=1.37 \
+    wagoodman/dive:latest {image_id}"]
         process= subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
         process.wait()
         filehandler=open("file.json","r")
@@ -67,7 +69,7 @@ async def create_container(container_id : str):
         image_id = id_container.attrs['Config']['Image']
         image = client.images.get(image_id)
         result = image.tags[0].split(':')[0]
-        process=subprocess.run(["powershell",f"docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock dslim/slim build --http-probe {result}"], shell=True, stdout=subprocess.PIPE)
+        process=subprocess.run([f"docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock dslim/slim build --http-probe {result}"], shell=True, stdout=subprocess.PIPE)
         print(process.stdout)
         print(result + '.slim')
         command=["wsl", "dive", "--json", "file.json"]
