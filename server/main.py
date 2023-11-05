@@ -1,9 +1,11 @@
+from pydoc import cli
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 import docker
-import subprocess
+from docker import APIClient
 from fastapi.middleware.cors import CORSMiddleware
 import json
 import os
+import subprocess
 import asyncio
 
 #? After the model i will creates pydantic model
@@ -87,6 +89,10 @@ async def create_container(container_id : str):
 async def status(websocket: WebSocket):
     await websocket.accept()
     client = docker.DockerClient(base_url='tcp://localhost:2375')
+    # client = docker.APIClient(base_url= "/var/run/docker.sock")
+    # client = docker.DockerClient(base_url= '/var/run/docker.sock')
+    
+    # client = APIClient(base_url='tcp://localhost:2375')
     try:
         while True:
             containers = client.containers.list()
