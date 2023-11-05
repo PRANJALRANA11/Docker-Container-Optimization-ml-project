@@ -14,8 +14,9 @@ app = FastAPI()
 
 #? CORS
 origins = [
-    "http://localhost:3000",
-    "http://localhost:3001",
+    # "http://localhost:3000",
+    # "http://localhost:3001",
+    "*"
 ]
 
 app.add_middleware(
@@ -31,9 +32,6 @@ app.add_middleware(
 async def root():
     return {"message": "Docker Container ID work"}
 
-@app.get("/model")
-async def model(dockerFile : str):
-    return {"model": "Currently working on it", "dockerFile": dockerFile}
 
 
 @app.get("/inspect_image/{id}")
@@ -102,47 +100,21 @@ async def status(websocket: WebSocket):
     except Exception as e:
         print(f"An error occurred: {e}")
 
+@app.get("/slim/{id}")
+async def slim(id: str):
+    client = docker.DockerClient(base_url='tcp://localhost:2375')
 
-        
+    image = client.images.get(id)
 
+    command = f"docker-slim build {image.tags[0]}"
+    container = client.containers.run("dslim/slim", command=command, volumes={'/var/run/docker.sock': {'bind': '/var/run/docker.sock', 'mode': 'rw'}}, detach=True,)
+    try:
+        slim_image_id = image.tags[0].replace(":",".slim:")
+        slim_image = client.images.get(slim_image_id)
+    except docker.errors.ImageNotFound:
+            print("Image not found")
+    else:
+        return {"message": "Failed to create slimmed image."}
 
-
-
-
-    
-
-
-
-
-
-
-# class InputData(BaseModel):
-#     feature1: float
-#     feature2: float
-#     feature3: float
-
-#? Success
-# @app.post("/machinelearning")
-# async def machine_learning(data: InputData):
-#     input_data = linear_regression.np.array([[data.feature1, data.feature2, data.feature3]])
-
-#     prediction = linear_regression.model.predict(input_data)
-#     result = prediction[0]
-
-#     return {"prediction": result}
-
-
-
-# @app.get("/images/{name}")
-# async def image_to_dockerFile(name: str):
-#     client = docker.DockerClient(base_url='tcp://localhost:2375')
-
-
-#     image_name = image_name.replace("%3A", ":")
-#     # try:
-
-#     image = client.images.get(name)
-#     # except docker.errors.NotFound:
-#     #     images = client.images.list()
-#     #     return [ image.attrs for image in images]
-#     return [{ "attributes": image.attrs} ]
+        #! Will going to call a new end-point ok
+    return {"message": f"Slimmed image created with id: {slim_image.id}"}
