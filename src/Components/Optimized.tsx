@@ -1,34 +1,27 @@
-
 import React, { useEffect } from 'react'
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import {  Inspect_Image_Api } from '../helpers/api' 
+import {  Inspect_optimized_Image_Api } from '../helpers/api' 
 import 'react-circular-progressbar/dist/styles.css';
-
 import { useNavigate } from 'react-router-dom';
 
 
 
-
-export default function Images({ID}:any){
-
+export default function Optimized({ID}:any){
   const navigate = useNavigate();
   const [details_image,setdetails_image] = React.useState<any>({});
   const [details_layers,setdetails_layers] = React.useState<any[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   
-
   useEffect(() => {
     const handleInspectImage = async(ID:string) => {
       try{
         console.log(ID)
-        const response =  await Inspect_Image_Api(ID);
+        const response =  await Inspect_optimized_Image_Api(ID);
         if(response.status === 200){
-
-        console.log(response.data);
+        console.log(response);
         setdetails_image(response.data.image);
         setdetails_layers(response.data.layer);
         setIsLoading(false);
-
         }
       }catch(error){
         console.log(error);
@@ -39,12 +32,11 @@ export default function Images({ID}:any){
     },[ID]);
   return (
     <div className="pl-5 space-y-4" style={{backgroundColor:"#0f1d32"}}>
-      <h3 className="text-3xl ml-80 mt-10 text-white" style={{fontFamily:"poppins"}}>Analyzing:</h3>
+      <h3 className="text-3xl ml-80 mt-10 text-white" style={{fontFamily:"poppins"}}>Analyzing Optimized Image:</h3>
       <div className="flex ml-80 space-x-4">
         <div>
         <div className=" rounded-md p-4">
           <div className="text-sm text-gray-400" style={{fontFamily:"poppins"}}>Total Size</div>
-
           {isLoading ? (
         // Display loading GIF while data is being fetched
         <div className='mt-8'>
@@ -82,18 +74,11 @@ export default function Images({ID}:any){
             Containers
           </button>
         </div>
-        <div className='w-40 mt-5'>
-          <button onClick={()=> navigate("/optimized_image")}  className='text-black text-md bg-white rounded-md w-32 h-8 hover:shadow-[5px_5px_0px_0px_rgba(109,40,217)] transition-all' style={{fontFamily:"poppins"}}>
-            Optimize 
-
-          </button>
-        </div>
         </div>
         
         </div>
         <div >
         <div style={{ width: 200, height: 200, marginLeft:200 }}>
-
         {isLoading ? (
         // Display loading GIF while data is being fetched
         <div className='flex justify-center mt-40'>
@@ -101,7 +86,6 @@ export default function Images({ID}:any){
         </div>
       ) : (
         <CircularProgressbar  strokeWidth={4} value={Math.floor(details_image.efficiencyScore*100)} text={`${Math.floor(details_image.efficiencyScore*100)}%`} styles={buildStyles({
-
                                     strokeLinecap: 'round',
                                     textSize: '16px',
                                     pathTransitionDuration: 0.5,
@@ -110,7 +94,6 @@ export default function Images({ID}:any){
                                     pathColor:"#f06155",
             
                                 })}
-
                             />
                             )}
         </div>
@@ -128,7 +111,6 @@ export default function Images({ID}:any){
         </div>
       ) : (
         <table className="w-full table-fixed">
-
           <thead style={{backgroundColor:"rgb(29 50 80)"}}>
             <tr>
               <th className="px-4 py-2 text-left text-white font-semibold" style={{fontFamily:"poppins"}}>Index</th>
@@ -150,10 +132,8 @@ export default function Images({ID}:any){
   ))}
 </tbody>
 
-
         </table>
       )}
-
       </div>
     </div>
     </div>
